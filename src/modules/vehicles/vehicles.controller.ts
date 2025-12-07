@@ -14,6 +14,7 @@ const createVehicles = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: err.message,
+      errors: err,
     });
   }
 };
@@ -39,7 +40,7 @@ const getVehicless = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: err.message,
-      datails: err,
+      errors: err,
     });
   }
 };
@@ -62,9 +63,11 @@ const getSingleVehicles = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch vehicle" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch vehicle",
+      errors: err,
+    });
   }
 };
 
@@ -88,7 +91,11 @@ const updateVehicles = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to update vehicle" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to update vehicle",
+      errors: err,
+    });
   }
 };
 
@@ -116,7 +123,11 @@ const deleteVehicles = async (req: Request, res: Response) => {
     console.log(err);
     res
       .status(500)
-      .json({ success: false, message: "Failed to delete vehicle" });
+      .json({
+        success: false,
+        message: "Failed to delete vehicle",
+        errors: err,
+      });
   }
 };
 

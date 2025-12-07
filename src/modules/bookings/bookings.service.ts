@@ -30,12 +30,41 @@ const createBookings = async (payload: Record<string, unknown>) => {
 };
 
 const getAllBookings = async () => {
-  const result = await pool.query(`SELECT * FROM Bookings`);
+  const result = await pool.query(`SELECT 
+        b.id,
+        b.customer_id,
+        b.vehicle_id,
+        b.rent_start_date,
+        b.rent_end_date,
+        b.total_price,
+        b.status,
+        u.name AS customer_name,
+        u.email AS customer_email,
+        v.vehicle_name,
+        v.registration_number
+      FROM Bookings b
+      JOIN Users u ON b.customer_id = u.id
+      JOIN Vehicles v ON b.vehicle_id = v.id
+      `);
+
   return result;
 };
 const getUserWiseBookings = async (customer_id: string) => {
   const result = await pool.query(
-    `SELECT * FROM Bookings WHERE customer_id=$1`,
+    `SELECT 
+        b.id,
+        b.customer_id,
+        b.vehicle_id,
+        b.rent_start_date,
+        b.rent_end_date,
+        b.total_price,
+        b.status,
+        v.vehicle_name,
+        v.registration_number,
+        v.type,
+      FROM Bookings b
+      JOIN Vehicles v ON b.vehicle_id = v.id
+      WHERE b.customer_id = $1,`,
     [customer_id]
   );
   return result;

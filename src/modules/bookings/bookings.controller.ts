@@ -33,7 +33,7 @@ const createBookings = async (req: Request, res: Response) => {
 
         res.status(201).json({
           success: true,
-          message: "Bookingscreated",
+          message: "Booking created successfully",
           data: result.rows[0],
         });
         await vehiclesServices.updateVehicles(
@@ -51,6 +51,7 @@ const createBookings = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: err.message,
+      errors: err,
     });
   }
 };
@@ -61,24 +62,56 @@ const getBookings = async (req: Request, res: Response) => {
       const userWiseResult = await bookingsServices.getUserWiseBookings(
         req.user.id as string
       );
+      const data = userWiseResult.rows.map((row) => ({
+        id: row.id,
+        customer_id: row.customer_id,
+        vehicle_id: row.vehicle_id,
+        rent_start_date: row.rent_start_date,
+        rent_end_date: row.rent_end_date,
+        total_price: row.total_price,
+        status: row.status,
+
+        vehicle: {
+          vehicle_name: row.vehicle_name,
+          registration_number: row.registration_number,
+          type: row.type,
+        },
+      }));
       return res.status(200).json({
         success: true,
-        message: "vehicless retrieved successfully",
-        data: userWiseResult.rows,
+        message: "Your bookings retrieved successfully",
+        data: data,
       });
     } else {
       const result = await bookingsServices.getAllBookings();
+      const data = result.rows.map((row) => ({
+        id: row.id,
+        customer_id: row.customer_id,
+        vehicle_id: row.vehicle_id,
+        rent_start_date: row.rent_start_date,
+        rent_end_date: row.rent_end_date,
+        total_price: row.total_price,
+        status: row.status,
+        customer: {
+          name: row.customer_name,
+          email: row.customer_email,
+        },
+        vehicle: {
+          vehicle_name: row.vehicle_name,
+          registration_number: row.registration_number,
+        },
+      }));
       res.status(200).json({
         success: true,
-        message: "vehicless retrieved successfully",
-        data: result.rows,
+        message: "Bookings retrieved successfully",
+        data: data,
       });
     }
   } catch (err: any) {
     res.status(500).json({
       success: false,
       message: err.message,
-      datails: err,
+      errors: err,
     });
   }
 };
@@ -127,13 +160,24 @@ const updateBookings = async (req: Request, res: Response) => {
       );
       return res.status(200).json({
         success: true,
-        message: "Vehicle returned successfully",
-        data: updateResult.rows[0],
+        message: "Booking marked as returned. Vehicle is now available",
+        data: {
+          ...updateResult.rows[0],
+          vehicle: {
+            availability_status: "available",
+          },
+        },
       });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Failed to update vehicles" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Failed to update vehicles",
+        errors: err,
+      });
   }
 };
 

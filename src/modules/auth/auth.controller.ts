@@ -15,6 +15,7 @@ const createUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: err.message,
+      errors: err,
     });
   }
 };
@@ -33,6 +34,7 @@ const loginUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: err.message,
+      errors: err,
     });
   }
 };
