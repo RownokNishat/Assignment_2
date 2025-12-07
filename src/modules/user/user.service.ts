@@ -19,7 +19,13 @@ const updateUser = async (name: string, email: string, id: string) => {
 
   return result;
 };
-
+const getAllBookingsByUser = async (userId: string) => {
+  const result = await pool.query(
+    `SELECT * FROM Bookings WHERE customer_id = $1`,
+    [userId]
+  );
+  return result;
+};
 const deleteUser = async (id: string) => {
   const result = await pool.query(`DELETE FROM users WHERE id = $1`, [id]);
 
@@ -31,4 +37,5 @@ export const userServices = {
   getSingleuser,
   updateUser,
   deleteUser,
+  getAllBookingsByUser,
 };

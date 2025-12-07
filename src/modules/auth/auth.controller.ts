@@ -7,7 +7,7 @@ const createUser = async (req: Request, res: Response) => {
     // console.log(result.rows[0]);
     res.status(201).json({
       success: true,
-      message: "Data Instered Successfully",
+      message: "User registered successfully",
       data: result.rows[0],
     });
   } catch (err: any) {
@@ -26,7 +26,7 @@ const loginUser = async (req: Request, res: Response) => {
     // console.log(result.rows[0]);
     res.status(200).json({
       success: true,
-      message: "login successful",
+      message: "Login successful",
       data: result,
     });
   } catch (err: any) {
