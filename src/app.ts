@@ -6,6 +6,7 @@ import { userRoutes } from "./modules/user/user.routes";
 
 import { authRoutes } from "./modules/auth/auth.routes";
 import { vehiclesRoutes } from "./modules/vehicles/vehicles.routes";
+import { bookingsRoutes } from "./modules/bookings/bookings.routes";
 
 const app = express();
 // parser
@@ -15,19 +16,16 @@ app.use(express.json());
 // initializing DB
 initDB();
 
-// "/" -> localhost:5000/
 app.get("/", logger, (req: Request, res: Response) => {
-  res.send("Hello Next Level Developers!");
+  res.send("Hello!");
 });
 
-//users CRUD
 app.use("/api/v1/users", userRoutes);
 
-//todos CRUD
 app.use("/api/v1/vehicles", vehiclesRoutes);
 
-//auth routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/bookings", bookingsRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

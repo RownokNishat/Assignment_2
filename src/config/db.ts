@@ -25,7 +25,7 @@ const initDB = async () => {
             type VARCHAR(20) NOT NULL CHECK (type IN ('car', 'bike', 'van', 'SUV')),
             registration_number VARCHAR(20) UNIQUE NOT NULL,
             daily_rent_price NUMERIC NOT NULL,
-            availability_status VARCHAR(20) NOT NULL CHECK(type IN ('available','booked'))
+            availability_status VARCHAR(20) NOT NULL DEFAULT 'available'
             )
             `);
   await pool.query(`

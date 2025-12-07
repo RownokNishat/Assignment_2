@@ -2,13 +2,9 @@ import { pool } from "../../config/db";
 
 // Record<string, unkown> = {key: value}
 const createVehicles = async (payload: Record<string, unknown>) => {
-  const {
-    vechicle_name,
-    type,
-    registration_number,
-    daily_rent_price,
-    availability_status,
-  } = payload;
+  const { vechicle_name, type, registration_number, daily_rent_price } =
+    payload;
+  const availability_status = "available";
   const result = await pool.query(
     `INSERT INTO Vehicles(vehicle_name,type,registration_number,daily_rent_price,availability_status) VALUES($1, $2, $3, $4, $5) RETURNING *`,
     [
@@ -34,11 +30,23 @@ const getSingleVehicles = async (id: string) => {
 };
 
 const updateVehicles = async (payload: Record<string, unknown>, id: string) => {
-  const { daily_rent_price, availability_status } = payload;
-  const result = await pool.query(
-    "UPDATE Vehicles SET daily_rent_price=$1, availability_status=$2 WHERE id=$3 RETURNING *",
-    [daily_rent_price, availability_status, id]
-  );
+  const updates: string[] = [];
+  const values: unknown[] = [];
+  let paramCount = 1;
+
+  // Dynamically build SET clause based on payload fields
+  for (const [key, value] of Object.entries(payload)) {
+    updates.push(`${key}=$${paramCount}`);
+    values.push(value);
+    paramCount++;
+  }
+
+  values.push(id); // Add id as the last parameter for WHERE clause
+
+  const query = `UPDATE Vehicles SET ${updates.join(
+    ", "
+  )} WHERE id=$${paramCount} RETURNING *`;
+  const result = await pool.query(query, values);
   return result;
 };
 
