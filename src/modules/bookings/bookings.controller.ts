@@ -29,6 +29,13 @@ const createBookings = async (req: Request, res: Response) => {
 
         req.body.total_price = total_price;
         console.log("Total Price: ", total_price);
+        if (total_price <= 0) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid rent dates",
+          });
+        }
+
         const result = await bookingsServices.createBookings(req.body);
 
         res.status(201).json({
@@ -171,13 +178,11 @@ const updateBookings = async (req: Request, res: Response) => {
     }
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to update vehicles",
-        errors: err,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Failed to update vehicles",
+      errors: err,
+    });
   }
 };
 
