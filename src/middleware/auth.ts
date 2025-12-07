@@ -1,5 +1,3 @@
-// higher order function  return korbe function k
-
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
@@ -8,11 +6,15 @@ import config from "../config";
 const auth = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const token = req.headers.authorization;
-      console.log({ token });
-      if (!token) {
-        return res.status(500).json({ message: "You are not allowed!!" });
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+          message:
+            "You are not authorized! Please provide a valid Bearer token.",
+        });
       }
+
+      const token = authHeader.substring(7); // Remove 'Bearer ' prefix
       const decoded = jwt.verify(
         token,
         config.jwtSecret as string
@@ -20,6 +22,7 @@ const auth = (...roles: string[]) => {
       console.log({ decoded });
       req.user = decoded;
 
+      //["admin"]
       if (roles.length && !roles.includes(decoded.role as string)) {
         return res.status(500).json({
           error: "unauthorized!!!",
@@ -28,7 +31,6 @@ const auth = (...roles: string[]) => {
 
       next();
     } catch (err: any) {
-      console.log(err.message);
       res.status(500).json({
         success: false,
         message: err.message,
@@ -36,5 +38,4 @@ const auth = (...roles: string[]) => {
     }
   };
 };
-
 export default auth;
