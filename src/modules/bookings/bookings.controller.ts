@@ -65,7 +65,7 @@ const createBookings = async (req: Request, res: Response) => {
 
 const getBookings = async (req: Request, res: Response) => {
   try {
-    if (req.user?.role === "user") {
+    if (req.user?.role === "customer") {
       const userWiseResult = await bookingsServices.getUserWiseBookings(
         req.user.id as string
       );
