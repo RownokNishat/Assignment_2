@@ -7,7 +7,7 @@ const createUser = async (req: Request, res: Response) => {
     const { id, name, email, role, phone } = result.rows[0];
     res.status(201).json({
       success: true,
-      message: "User registered successfully",
+      message: "Customer registered successfully",
       data: { id, name, email, role, phone },
     });
   } catch (err: any) {

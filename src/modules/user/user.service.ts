@@ -11,12 +11,24 @@ const getSingleuser = async (id: string) => {
   return result;
 };
 
-const updateUser = async (name: string, email: string, id: string) => {
-  const result = await pool.query(
-    `UPDATE users SET name=$1, email=$2 WHERE id=$3 RETURNING *`,
-    [name, email, id]
-  );
+const updateUser = async (payload: Record<string, unknown>, id: string) => {
+  const updates: string[] = [];
+  const values: unknown[] = [];
+  let paramCount = 1;
 
+  // Dynamically build SET clause based on payload fields
+  for (const [key, value] of Object.entries(payload)) {
+    updates.push(`${key}=$${paramCount}`);
+    values.push(value);
+    paramCount++;
+  }
+
+  values.push(id); // Add id as the last parameter for WHERE clause
+
+  const query = `UPDATE Users SET ${updates.join(
+    ", "
+  )} WHERE id=$${paramCount} RETURNING *`;
+  const result = await pool.query(query, values);
   return result;
 };
 const getAllBookingsByUser = async (userId: string) => {

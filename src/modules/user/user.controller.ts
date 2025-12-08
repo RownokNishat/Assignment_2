@@ -52,10 +52,8 @@ const updateUser = async (req: Request, res: Response) => {
     console.log(req.user);
     const reqUser = req.user;
     if (reqUser?.role == "admin") {
-      const { name, email } = req.body;
       const result = await userServices.updateUser(
-        name,
-        email,
+        req.body,
         req.params.userId!
       );
 
@@ -71,11 +69,12 @@ const updateUser = async (req: Request, res: Response) => {
           data: result.rows[0],
         });
       }
-    } else if (reqUser?.role == "user" && reqUser?.id == req.params.userId) {
-      const { name, email } = req.body;
+    } else if (
+      reqUser?.role == "customer" &&
+      reqUser?.id == req.params.userId
+    ) {
       const result = await userServices.updateUser(
-        name,
-        email,
+        req.body,
         req.params.userId!
       );
 
