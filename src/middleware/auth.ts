@@ -9,6 +9,7 @@ const auth = (...roles: string[]) => {
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({
+          success: "false",
           message:
             "You are not authorized! Please provide a valid Bearer token.",
         });
@@ -25,7 +26,8 @@ const auth = (...roles: string[]) => {
       //["admin"]
       if (roles.length && !roles.includes(decoded.role as string)) {
         return res.status(500).json({
-          error: "unauthorized!!!",
+          success: "false",
+          message: "unauthorized!!!",
         });
       }
 
