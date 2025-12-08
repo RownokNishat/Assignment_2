@@ -64,7 +64,7 @@ const getUserWiseBookings = async (customer_id: string) => {
         v.type
       FROM Bookings b
       JOIN Vehicles v ON b.vehicle_id = v.id
-      WHERE b.customer_id = $1,`,
+      WHERE b.customer_id = $1`,
     [customer_id]
   );
   return result;
